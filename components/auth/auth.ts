@@ -3,6 +3,8 @@ import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { client, db } from "../db/db";
 import { nextCookies } from "better-auth/next-js";
+import { sendPasswordResetEmail } from "@/lib/email/sendPasswordResetEmail";
+import { sendEmailVerificationEmail } from "@/lib/email/email-verification";
 
 export const auth = betterAuth({
   experimental: { joins: true },
@@ -42,6 +44,23 @@ export const auth = betterAuth({
   //email and password configuration
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
+    sendResetPassword: async ({ user, url }) => {
+      await sendPasswordResetEmail({
+        user: { email: user.email, name: user.name },
+        url,
+      });
+    },
+  },
+
+  emailVerification: {
+    sendOnSignUp: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      await sendEmailVerificationEmail({
+        user: { email: user.email, name: user.name },
+        url,
+      });
+    },
   },
   plugins: [nextCookies()],
 });
