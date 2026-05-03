@@ -28,7 +28,13 @@ const signInSchema = z.object({
   password: z.string().min(8),
 });
 
-export default function SignInTab() {
+export default function SignInTab({
+  openEmailVerificationTab,
+  openForgotPasswordTab,
+}: {
+  openEmailVerificationTab: (email: string) => void;
+  openForgotPasswordTab: () => void;
+}) {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const form = useForm({
@@ -49,6 +55,9 @@ export default function SignInTab() {
         {
           onError: (error) => {
             toast.error(error.error?.message || "Something went wrong");
+            if (error.error?.code === "EMAIL_NOT_VERIFIED") {
+              openEmailVerificationTab(value.value.email);
+            }
           },
           onSuccess: () => {
             toast.success("Signed in successfully");
@@ -104,7 +113,16 @@ export default function SignInTab() {
                   field.state.meta.isTouched && !field.state.meta.isValid;
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                    <div className="flex justify-between items-center">
+                      <FieldLabel htmlFor={field.name}>Password</FieldLabel>
+                      <Button
+                        variant="link"
+                        size="sm"
+                        onClick={openForgotPasswordTab}
+                      >
+                        Forgot Password?
+                      </Button>
+                    </div>
                     <div className="relative">
                       <Input
                         type={showPassword ? "text" : "password"}

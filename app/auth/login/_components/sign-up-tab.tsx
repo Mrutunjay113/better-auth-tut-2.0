@@ -24,6 +24,7 @@ import { useState } from "react";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import { authClient } from "@/components/auth/auth-client";
 import { useRouter } from "next/navigation";
+import EmailVerificationTab from "./email-verification";
 
 const signUpSchema = z
   .object({
@@ -40,7 +41,11 @@ const signUpSchema = z
 
 type SignupSchema = z.infer<typeof signUpSchema>;
 
-export default function SignUpTab() {
+export default function SignUpTab({
+  openEmailVerificationTab,
+}: {
+  openEmailVerificationTab: (email: string) => void;
+}) {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
@@ -78,10 +83,14 @@ export default function SignUpTab() {
             toast.success("Account created successfully", {
               description: "Please check your email for verification",
             });
-            router.push("/");
           },
         },
       );
+      if (res.error === null && !res.data?.user?.emailVerified) {
+        openEmailVerificationTab(res?.data?.user?.email);
+      } else {
+        router.push("/");
+      }
     },
   });
 

@@ -6,12 +6,24 @@ import SignUpTab from "./_components/sign-up-tab";
 import { Separator } from "@/components/ui/separator";
 import { GitBranch } from "lucide-react";
 import SocialAuthButtons from "./_components/SocialAuthButtons";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { authClient } from "@/components/auth/auth-client";
 import { useRouter } from "next/navigation";
+import EmailVerificationTab from "./_components/email-verification";
+import ForgotPasswordTab from "./_components/forgotPassword";
+
+type Tab = "signin" | "signup" | "email-verification" | "forgot-password";
 
 export default function LoginPage() {
   const router = useRouter();
+  const [email, setEmail] = useState<string | undefined>(undefined);
+
+  const [selectedTab, setSelectedTab] = useState<Tab>("signin" as const);
+
+  function openEmailVerificationTab(email: string) {
+    setEmail(email);
+    setSelectedTab("email-verification");
+  }
 
   useEffect(() => {
     authClient.getSession().then((session) => {
@@ -21,14 +33,25 @@ export default function LoginPage() {
 
   return (
     <div className="flex justify-start">
-      <Tabs defaultValue="signin" className=" my-6 sm:max-w-xl w-full  px-4">
-        <TabsList>
-          <TabsTrigger value="signin">Sign in</TabsTrigger>
-          <TabsTrigger value="signup">Sign up</TabsTrigger>
-        </TabsList>
+      <Tabs
+        value={selectedTab}
+        onValueChange={(value) => setSelectedTab(value as Tab)}
+        className=" my-6 sm:max-w-xl w-full  px-4"
+      >
+        {(selectedTab === "signin" || selectedTab === "signup") && (
+          <TabsList>
+            <TabsTrigger value="signin">Sign in</TabsTrigger>
+            <TabsTrigger value="signup">Sign up</TabsTrigger>
+          </TabsList>
+        )}
         <Card className="w-full ">
           <TabsContent value="signin">
-            <SignInTab />
+            <SignInTab
+              openEmailVerificationTab={openEmailVerificationTab}
+              openForgotPasswordTab={() =>
+                setSelectedTab("forgot-password" as Tab)
+              }
+            />
             {/* //add horizontal border with center text "Or" in the middle */}
             <div className="relative mx-7">
               <div
@@ -46,7 +69,15 @@ export default function LoginPage() {
             </div>
           </TabsContent>
           <TabsContent value="signup" className="">
-            <SignUpTab />
+            <SignUpTab openEmailVerificationTab={openEmailVerificationTab} />
+          </TabsContent>
+
+          <TabsContent value="email-verification">
+            <EmailVerificationTab email={email || "hello@example.com"} />
+          </TabsContent>
+
+          <TabsContent value="forgot-password">
+            <ForgotPasswordTab openSignInTab={() => setSelectedTab("signin")} />
           </TabsContent>
         </Card>
       </Tabs>
