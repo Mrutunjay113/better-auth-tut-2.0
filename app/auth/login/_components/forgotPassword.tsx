@@ -28,6 +28,7 @@ export default function ForgotPasswordTab({
 }: {
   openSignInTab: () => void;
 }) {
+  console.log("Forgot Password Tab");
   const form = useForm({
     defaultValues: {
       email: "",

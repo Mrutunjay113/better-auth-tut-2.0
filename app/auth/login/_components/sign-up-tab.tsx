@@ -33,6 +33,7 @@ const signUpSchema = z
     password: z.string().min(1),
 
     confirmPassword: z.string().min(1),
+    favoriteNumber: z.number().min(1),
   })
   .refine((data) => data?.password === data?.confirmPassword, {
     message: "Passwords do not match",
@@ -57,10 +58,11 @@ export default function SignUpTab({
     //   confirmPassword: "Test@123",
     // },
     defaultValues: {
-      name: "Mrutunjay",
-      email: "dev.mrutunjay7332@gmail.com",
-      password: "Mrutunjay@123",
-      confirmPassword: "Mrutunjay@123",
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      favoriteNumber: undefined as unknown as number,
     },
     validators: {
       onSubmit: signUpSchema,
@@ -73,6 +75,7 @@ export default function SignUpTab({
           email: props.value.email,
           password: props.value.password,
           name: props.value.name,
+          favoriteNumber: props.value.favoriteNumber,
           callbackURL: "/",
         },
         {
@@ -226,6 +229,34 @@ export default function SignUpTab({
                       onBlur={field.handleBlur}
                       onChange={(e) => field.handleChange(e.target.value)}
                       placeholder="********"
+                      aria-invalid={isInvalid}
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            />
+            <form.Field
+              name="favoriteNumber"
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>
+                      Favorite Number
+                    </FieldLabel>
+                    <Input
+                      type="number"
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value || ""}
+                      onBlur={field.handleBlur}
+                      onChange={(e) =>
+                        field.handleChange(Number(e.target.value))
+                      }
                       aria-invalid={isInvalid}
                     />
                     {isInvalid && (
