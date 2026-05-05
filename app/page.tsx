@@ -4,6 +4,7 @@ import { BetterAuthActionButton } from "@/components/auth/better-auth-action-but
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import { Fragment } from "react/jsx-runtime";
 
 export default function Home() {
   const { data: session, isPending } = authClient.useSession();
@@ -20,15 +21,20 @@ export default function Home() {
           </span>
         </h1>
         {session ? (
-          <BetterAuthActionButton
-            size={"lg"}
-            variant={"destructive"}
-            action={() => {
-              return authClient.signOut();
-            }}
-          >
-            Logout
-          </BetterAuthActionButton>
+          <div className="flex flex-row gap-2">
+            <Button asChild size={"lg"}>
+              <Link href="/profile">Profile</Link>
+            </Button>
+            <BetterAuthActionButton
+              size={"lg"}
+              variant={"destructive"}
+              action={() => {
+                return authClient.signOut();
+              }}
+            >
+              Logout
+            </BetterAuthActionButton>
+          </div>
         ) : (
           <Button asChild size={"lg"}>
             <Link href="/auth/login">Sign in / Sign up</Link>
