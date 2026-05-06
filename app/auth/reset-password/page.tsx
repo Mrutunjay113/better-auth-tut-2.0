@@ -19,6 +19,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useForm } from "@tanstack/react-form";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -32,12 +33,11 @@ const resetPasswordSchema = z
     path: ["confirmPassword"],
   });
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get("token");
   const error = searchParams.get("error");
-  console.log(token, error);
   const form = useForm({
     defaultValues: {
       password: "",
@@ -197,5 +197,27 @@ export default function ResetPasswordPage() {
         </form>
       </CardContent>
     </Card>
+  );
+}
+
+function ResetPasswordFallback() {
+  return (
+    <Card className="w-full max-w-lg mx-auto my-10">
+      <CardHeader>
+        <CardTitle>Reset Password</CardTitle>
+        <CardDescription>Loading…</CardDescription>
+      </CardHeader>
+      <CardContent className="flex justify-center py-8">
+        <Spinner />
+      </CardContent>
+    </Card>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<ResetPasswordFallback />}>
+      <ResetPasswordContent />
+    </Suspense>
   );
 }
