@@ -16,12 +16,12 @@ export const auth = betterAuth({
     client: client,
   }),
   //session configuration
-  session: {
-    cookieCache: {
-      enabled: true,
-      maxAge: 60 * 5, // 5 minutes
-    },
-  },
+  // session: {
+  //   cookieCache: {
+  //     enabled: true,
+  //     maxAge: 60 * 5, // 5 minutes
+  //   },
+  // },
 
   //rate limiting configuration
   // rateLimit: {
