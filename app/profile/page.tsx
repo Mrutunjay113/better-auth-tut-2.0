@@ -26,6 +26,11 @@ import { Suspense } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import SetPasswordButton from "./_components/set-password-button";
 import ChangePasswordForm from "./_components/change-password-form";
+import SessionManagement from "./_components/session-management";
+
+function LoadingSuspense({ children }: { children: React.ReactNode }) {
+  return <Suspense fallback={<Spinner />}>{children}</Suspense>;
+}
 
 export default async function ProfilePage() {
   const session = await auth.api.getSession({
@@ -69,7 +74,7 @@ export default async function ProfilePage() {
           </div>
         </div>
       </div>
-      <Tabs defaultValue="security">
+      <Tabs defaultValue="sessions">
         <TabsList>
           <TabsTrigger value="profile">
             <User /> <span className="ml-1">Profile</span>
@@ -78,7 +83,7 @@ export default async function ProfilePage() {
             <Lock /> <span className="ml-1">Security</span>
           </TabsTrigger>
           {/* session */}
-          <TabsTrigger value="session">
+          <TabsTrigger value="sessions">
             <Key /> <span className="ml-1">Session</span>
           </TabsTrigger>
           {/* Accounts */}
@@ -109,11 +114,35 @@ export default async function ProfilePage() {
             <SecurityTab email={session?.user?.email} />
           </LoadingSuspense>
         </TabsContent>
+        <TabsContent value="sessions">
+          <LoadingSuspense>
+            <SessionsTab currentSession={session?.session?.token} />
+          </LoadingSuspense>
+        </TabsContent>
       </Tabs>
     </div>
   );
 }
 
+async function SessionsTab({ currentSession }: { currentSession: string }) {
+  const sessions = await auth.api.listSessions({
+    headers: await headers(),
+  });
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Sessions</CardTitle>
+        <CardDescription>List of your sessions.</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <SessionManagement
+          sessions={sessions}
+          currentSessionToken={currentSession}
+        />
+      </CardContent>
+    </Card>
+  );
+}
 async function SecurityTab({ email }: { email: string }) {
   const accounts = await auth.api.listUserAccounts({
     headers: await headers(),
@@ -151,8 +180,4 @@ async function SecurityTab({ email }: { email: string }) {
       )}
     </div>
   );
-}
-
-function LoadingSuspense({ children }: { children: React.ReactNode }) {
-  return <Suspense fallback={<Spinner />}>{children}</Suspense>;
 }
