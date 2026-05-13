@@ -20,7 +20,7 @@ const profileUpdateSchema = z.object({
   name: z.string().min(1),
   email: z.string().email(),
   favoriteNumber: z.number().min(1),
-  image: z.string().min(1),
+  // image: z.string().min(1),
 });
 
 export default function ProfileUpdateForm({
@@ -30,7 +30,7 @@ export default function ProfileUpdateForm({
     name: string;
     email: string;
     favoriteNumber: number;
-    image: string;
+    // image: string;
   };
 }) {
   const [image, setImage] = useState<File | null>(null);
@@ -40,7 +40,7 @@ export default function ProfileUpdateForm({
       name: user.name,
       email: user.email,
       favoriteNumber: user.favoriteNumber,
-      image: user.image,
+      // image: user.image,
     },
     validators: {
       onSubmit: profileUpdateSchema,
@@ -48,13 +48,14 @@ export default function ProfileUpdateForm({
       onChange: profileUpdateSchema,
     },
     onSubmit: async (value) => {
+      console.log(value.value);
       const promises = [
         authClient.updateUser({
           name: value.value.name,
           favoriteNumber: value.value.favoriteNumber,
           //check if the session image and the new image are different then upload the new image
-          image:
-            value.value.image !== user.image ? value.value.image : undefined,
+          // image:
+          //   value.value.image !== user.image ? value.value.image : undefined,
         }),
       ];
       if (value?.value?.email !== user.email) {
@@ -86,19 +87,19 @@ export default function ProfileUpdateForm({
     },
   });
 
-  const handleImageUpload = () => {
-    const file = document.createElement("input");
-    file.type = "file";
-    file.accept = "image/*";
-    file.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0] as File;
-      if (file) {
-        setImage(file);
-        form.setFieldValue("image", file.name);
-      }
-    };
-    file.click();
-  };
+  // const handleImageUpload = () => {
+  //   const file = document.createElement("input");
+  //   file.type = "file";
+  //   file.accept = "image/*";
+  //   file.onchange = (e) => {
+  //     const file = (e.target as HTMLInputElement).files?.[0] as File;
+  //     if (file) {
+  //       setImage(file);
+  //       form.setFieldValue("image", file.name);
+  //     }
+  //   };
+  //   file.click();
+  // };
 
   return (
     <form
@@ -110,8 +111,8 @@ export default function ProfileUpdateForm({
       <FieldGroup>
         {/* Image upload */}
         <div className="flex items-center gap-2">
-          <Image
-            src={image ? URL.createObjectURL(image) : user.image}
+          {/* <Image
+            src={image ? URL.createObjectURL(image) : user.image || ""}
             alt="User Image"
             width={100}
             height={100}
@@ -125,7 +126,7 @@ export default function ProfileUpdateForm({
             }}
           >
             <Upload />
-          </Button>
+          </Button> */}
         </div>
         <form.Field
           name="name"
