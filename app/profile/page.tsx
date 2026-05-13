@@ -27,6 +27,7 @@ import { Spinner } from "@/components/ui/spinner";
 import SetPasswordButton from "./_components/set-password-button";
 import ChangePasswordForm from "./_components/change-password-form";
 import SessionManagement from "./_components/session-management";
+import AccountLinking from "./_components/account-linking";
 
 function LoadingSuspense({ children }: { children: React.ReactNode }) {
   return <Suspense fallback={<Spinner />}>{children}</Suspense>;
@@ -74,7 +75,7 @@ export default async function ProfilePage() {
           </div>
         </div>
       </div>
-      <Tabs defaultValue="sessions">
+      <Tabs defaultValue="linked-accounts">
         <TabsList>
           <TabsTrigger value="profile">
             <User /> <span className="ml-1">Profile</span>
@@ -87,7 +88,7 @@ export default async function ProfilePage() {
             <Key /> <span className="ml-1">Session</span>
           </TabsTrigger>
           {/* Accounts */}
-          <TabsTrigger value="accounts">
+          <TabsTrigger value="linked-accounts">
             <LinkIcon /> <span className="ml-1">Accounts</span>
           </TabsTrigger>
           {/* danger */}
@@ -103,7 +104,7 @@ export default async function ProfilePage() {
                   name: session.user.name || "",
                   email: session.user.email || "",
                   favoriteNumber: session.user.favoriteNumber || 0,
-                  image: session.user.image || "",
+                  // image: session.user.image || "",
                 }}
               />
             </CardContent>
@@ -117,6 +118,11 @@ export default async function ProfilePage() {
         <TabsContent value="sessions">
           <LoadingSuspense>
             <SessionsTab currentSession={session?.session?.token} />
+          </LoadingSuspense>
+        </TabsContent>
+        <TabsContent value="linked-accounts">
+          <LoadingSuspense>
+            <LinkedAccountsTab />
           </LoadingSuspense>
         </TabsContent>
       </Tabs>
@@ -178,6 +184,24 @@ async function SecurityTab({ email }: { email: string }) {
           </CardContent>
         </Card>
       )}
+    </div>
+  );
+}
+
+async function LinkedAccountsTab() {
+  const accounts = await auth.api.listUserAccounts({
+    headers: await headers(),
+  });
+  const nonCredentialAccounts = accounts?.filter(
+    (account) => account.providerId !== "credential",
+  );
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardContent>
+          <AccountLinking currentAccounts={nonCredentialAccounts ?? []} />
+        </CardContent>
+      </Card>
     </div>
   );
 }
