@@ -28,6 +28,8 @@ import SetPasswordButton from "./_components/set-password-button";
 import ChangePasswordForm from "./_components/change-password-form";
 import SessionManagement from "./_components/session-management";
 import AccountLinking from "./_components/account-linking";
+import { BetterAuthActionButton } from "@/components/auth/better-auth-action-button";
+import SignOut from "@/components/Sign-out";
 
 function LoadingSuspense({ children }: { children: React.ReactNode }) {
   return <Suspense fallback={<Spinner />}>{children}</Suspense>;
@@ -44,17 +46,23 @@ export default async function ProfilePage() {
     <div className="max-w-4xl mx-auto my-6 px-4">
       {" "}
       <div className="mb-8">
-        <Link href="/" className="inline-flex items-center mb-6">
-          <ArrowLeft className="size-4 mr-2" />
-          Back to Home
-        </Link>
+        <div className="flex mb-6 items-center bg-foreground/5 p-4 rounded-lg justify-between">
+          <Link href="/" className="inline-flex items-center">
+            <ArrowLeft className="size-4 mr-2" />
+            Back to Home
+          </Link>
+
+          {/* logout button */}
+          <SignOut />
+        </div>
+
         <div className="flex items-center space-x-4">
           <div className="size-16 bg-muted rounded-full flex items-center justify-center overflow-hidden">
             {session.user.image ? (
               <Image
                 width={64}
                 height={64}
-                src={session.user.image}
+                src={session.user.image ?? ""}
                 alt="User Avatar"
                 className="object-cover"
               />
