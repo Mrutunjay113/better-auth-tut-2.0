@@ -1,5 +1,4 @@
 import { betterAuth } from "better-auth";
-import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { client, db } from "../db/db";
 import { nextCookies } from "better-auth/next-js";
@@ -7,6 +6,7 @@ import { sendPasswordResetEmail } from "@/lib/email/sendPasswordResetEmail";
 import { sendEmailVerificationEmail } from "@/lib/email/email-verification";
 import { createAuthMiddleware } from "better-auth/api";
 import { sendWelcomeEmail } from "@/app/auth/login/_components/welcome-email";
+import { sendDeleteAccountConfirmationEmail } from "@/lib/email/delete-account-confirmation";
 
 export const auth = betterAuth({
   experimental: { joins: true },
@@ -73,6 +73,15 @@ export const auth = betterAuth({
   },
 
   user: {
+    deleteUser: {
+      enabled: true,
+      sendDeleteAccountVerification: async ({ user, url }) => {
+        await sendDeleteAccountConfirmationEmail({
+          user: { email: user.email, name: user.name },
+          url,
+        });
+      },
+    },
     changeEmail: {
       enabled: true,
       sendChangeEmailConfirmation: async ({ user, url, newEmail }) => {

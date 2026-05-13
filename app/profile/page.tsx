@@ -30,6 +30,7 @@ import SessionManagement from "./_components/session-management";
 import AccountLinking from "./_components/account-linking";
 import { BetterAuthActionButton } from "@/components/auth/better-auth-action-button";
 import SignOut from "@/components/Sign-out";
+import AccountDeletion from "./_components/account-deletion";
 
 function LoadingSuspense({ children }: { children: React.ReactNode }) {
   return <Suspense fallback={<Spinner />}>{children}</Suspense>;
@@ -83,7 +84,7 @@ export default async function ProfilePage() {
           </div>
         </div>
       </div>
-      <Tabs defaultValue="linked-accounts">
+      <Tabs defaultValue="profile">
         <TabsList>
           <TabsTrigger value="profile">
             <User /> <span className="ml-1">Profile</span>
@@ -132,6 +133,20 @@ export default async function ProfilePage() {
           <LoadingSuspense>
             <LinkedAccountsTab />
           </LoadingSuspense>
+        </TabsContent>
+        <TabsContent value="danger">
+          <Card className="ring-destructive/50 border-destructive/50">
+            <CardHeader>
+              <CardTitle>Delete Account</CardTitle>
+              <CardDescription>
+                Delete your account and all your data. This action is
+                irreversible.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <AccountDeletion />
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

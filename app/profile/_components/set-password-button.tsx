@@ -6,6 +6,7 @@ import { BetterAuthActionButton } from "@/components/auth/better-auth-action-but
 export default function SetPasswordButton({ email }: { email: string }) {
   return (
     <BetterAuthActionButton
+      className="w-full"
       action={() => {
         return authClient.requestPasswordReset({
           email: email,
