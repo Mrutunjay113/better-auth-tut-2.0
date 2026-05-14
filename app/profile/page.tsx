@@ -31,6 +31,7 @@ import AccountLinking from "./_components/account-linking";
 import { BetterAuthActionButton } from "@/components/auth/better-auth-action-button";
 import SignOut from "@/components/Sign-out";
 import AccountDeletion from "./_components/account-deletion";
+import TwoFactorAuth from "./_components/two-factor-auth";
 
 function LoadingSuspense({ children }: { children: React.ReactNode }) {
   return <Suspense fallback={<Spinner />}>{children}</Suspense>;
@@ -121,7 +122,10 @@ export default async function ProfilePage() {
         </TabsContent>
         <TabsContent value="security">
           <LoadingSuspense>
-            <SecurityTab email={session?.user?.email} />
+            <SecurityTab
+              email={session?.user?.email}
+              isTwoFactorEnabled={session?.user?.twoFactorEnabled ?? false}
+            />
           </LoadingSuspense>
         </TabsContent>
         <TabsContent value="sessions">
@@ -172,7 +176,13 @@ async function SessionsTab({ currentSession }: { currentSession: string }) {
     </Card>
   );
 }
-async function SecurityTab({ email }: { email: string }) {
+async function SecurityTab({
+  email,
+  isTwoFactorEnabled,
+}: {
+  email: string;
+  isTwoFactorEnabled?: boolean;
+}) {
   const accounts = await auth.api.listUserAccounts({
     headers: await headers(),
   });
@@ -204,6 +214,24 @@ async function SecurityTab({ email }: { email: string }) {
           </CardHeader>
           <CardContent>
             <SetPasswordButton email={email} />
+          </CardContent>
+        </Card>
+      )}
+      {hasPasswordAccount && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex flex-row items-center justify-between gap-2">
+              <span>Two-Factor Authentication</span>
+              <Badge variant={isTwoFactorEnabled ? "default" : "secondary"}>
+                {isTwoFactorEnabled ? "Enabled" : "Disabled"}
+              </Badge>{" "}
+            </CardTitle>
+            <CardDescription>
+              Enable two-factor authentication to secure your account.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <TwoFactorAuth isEnabled={isTwoFactorEnabled ?? false} />
           </CardContent>
         </Card>
       )}

@@ -7,6 +7,7 @@ import { sendEmailVerificationEmail } from "@/lib/email/email-verification";
 import { createAuthMiddleware } from "better-auth/api";
 import { sendWelcomeEmail } from "@/app/auth/login/_components/welcome-email";
 import { sendDeleteAccountConfirmationEmail } from "@/lib/email/delete-account-confirmation";
+import { twoFactor } from "better-auth/plugins/two-factor";
 
 export const auth = betterAuth({
   experimental: { joins: true },
@@ -114,5 +115,5 @@ export const auth = betterAuth({
       }
     }),
   },
-  plugins: [nextCookies()],
+  plugins: [nextCookies(), twoFactor()],
 });
