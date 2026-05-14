@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@better-auth/mongo-adapter": "^1.6.9",
+    "@better-auth/passkey": "^1.6.11",
     "@hugeicons/react": "^1.1.6",
     "@tabler/icons-react": "^3.41.1",
     "@tanstack/react-devtools": "^0.10.2",

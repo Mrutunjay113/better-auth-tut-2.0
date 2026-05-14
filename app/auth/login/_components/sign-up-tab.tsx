@@ -98,7 +98,7 @@ export default function SignUpTab({
   });
 
   return (
-    <Card className=" ring-0 w-full my-0 py-0">
+    <Card className=" ring-0 w-full my-0 py-0 shadow-none">
       <CardHeader className="">
         <CardTitle>Sign Up</CardTitle>
         <CardDescription>Create an account to get started.</CardDescription>
@@ -275,7 +275,7 @@ export default function SignUpTab({
               <Button
                 type="button"
                 variant="outline"
-                className="w-full sm:w-1/2"
+                className="w-full md:w-1/2"
                 disabled={isSubmitting}
                 onClick={() => form.reset()}
               >
@@ -284,7 +284,7 @@ export default function SignUpTab({
               <Button
                 type="submit"
                 form="sign-up-form"
-                className="w-full sm:w-1/2 justify-center"
+                className="w-full md:w-1/2 justify-center"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (

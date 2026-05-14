@@ -32,6 +32,7 @@ import { BetterAuthActionButton } from "@/components/auth/better-auth-action-but
 import SignOut from "@/components/Sign-out";
 import AccountDeletion from "./_components/account-deletion";
 import TwoFactorAuth from "./_components/two-factor-auth";
+import PasskeyManagement from "./_components/passkey-managment";
 
 function LoadingSuspense({ children }: { children: React.ReactNode }) {
   return <Suspense fallback={<Spinner />}>{children}</Suspense>;
@@ -183,9 +184,15 @@ async function SecurityTab({
   email: string;
   isTwoFactorEnabled?: boolean;
 }) {
-  const accounts = await auth.api.listUserAccounts({
-    headers: await headers(),
-  });
+  const [accounts, passkeys] = await Promise.all([
+    auth.api.listUserAccounts({
+      headers: await headers(),
+    }),
+    auth.api.listPasskeys({
+      headers: await headers(),
+    }),
+  ]);
+
   const hasPasswordAccount = accounts?.some(
     (account) => account.providerId === "credential",
   );
@@ -235,6 +242,14 @@ async function SecurityTab({
           </CardContent>
         </Card>
       )}
+      <Card>
+        <CardHeader>
+          <CardTitle>Passkey</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <PasskeyManagement passkeys={passkeys} />
+        </CardContent>
+      </Card>
     </div>
   );
 }
