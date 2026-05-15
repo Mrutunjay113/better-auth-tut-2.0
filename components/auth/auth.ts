@@ -9,6 +9,8 @@ import { sendWelcomeEmail } from "@/app/auth/login/_components/welcome-email";
 import { sendDeleteAccountConfirmationEmail } from "@/lib/email/delete-account-confirmation";
 import { twoFactor } from "better-auth/plugins/two-factor";
 import { passkey } from "@better-auth/passkey";
+import { admin } from "better-auth/plugins";
+import { ac, adminRole, user } from "./permission";
 export const auth = betterAuth({
   experimental: { joins: true },
 
@@ -115,5 +117,17 @@ export const auth = betterAuth({
       }
     }),
   },
-  plugins: [nextCookies(), twoFactor(), passkey()],
+  plugins: [
+    nextCookies(),
+    twoFactor(),
+    passkey(),
+    admin({
+      defaultRole: "user",
+      ac: ac,
+      roles: {
+        admin: adminRole,
+        user,
+      },
+    }),
+  ],
 });

@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/ui/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
+import ImpersonationIndicator from "@/components/auth/impersonation-indicator";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -50,6 +51,7 @@ export default function RootLayout({
         >
           {children}
           <Toaster richColors />
+          <ImpersonationIndicator />
         </ThemeProvider>
       </body>
     </html>

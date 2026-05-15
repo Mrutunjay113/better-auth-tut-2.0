@@ -25,6 +25,11 @@ export default function Home() {
             <Button asChild size={"lg"}>
               <Link href="/profile">Profile</Link>
             </Button>
+            {session?.user?.role === "admin" && (
+              <Button variant={"outline"} asChild size={"lg"}>
+                <Link href="/admin">Admin</Link>
+              </Button>
+            )}
             <BetterAuthActionButton
               size={"lg"}
               variant={"destructive"}

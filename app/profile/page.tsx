@@ -78,7 +78,7 @@ export default async function ProfilePage() {
               <h1 className="text-3xl font-bold">
                 {session.user.name || "User Profile"}
               </h1>
-              <Badge>{session?.user?.favoriteNumber || "User"}</Badge>
+              <Badge>{session?.user?.role || "User"}</Badge>
             </div>
             <p className="text-muted-foreground">
               {session?.user?.email || "User"}
