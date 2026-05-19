@@ -27,6 +27,11 @@ export default function Home() {
             </Button>
             {session?.user?.role === "admin" && (
               <Button variant={"outline"} asChild size={"lg"}>
+                <Link href="/organization">Organization</Link>
+              </Button>
+            )}
+            {session?.user?.role === "admin" && (
+              <Button variant={"outline"} asChild size={"lg"}>
                 <Link href="/admin">Admin</Link>
               </Button>
             )}

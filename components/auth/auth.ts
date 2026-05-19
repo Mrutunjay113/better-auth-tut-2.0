@@ -9,8 +9,9 @@ import { sendWelcomeEmail } from "@/app/auth/login/_components/welcome-email";
 import { sendDeleteAccountConfirmationEmail } from "@/lib/email/delete-account-confirmation";
 import { twoFactor } from "better-auth/plugins/two-factor";
 import { passkey } from "@better-auth/passkey";
-import { admin } from "better-auth/plugins";
+import { admin, organization } from "better-auth/plugins";
 import { ac, adminRole, user } from "./permission";
+import { sendOrganizationInviteEmail } from "@/lib/email/organization-invite";
 export const auth = betterAuth({
   experimental: { joins: true },
 
@@ -118,6 +119,21 @@ export const auth = betterAuth({
     }),
   },
   plugins: [
+    organization({
+      sendInvitationEmail: async ({
+        inviter,
+        organization,
+        invitation,
+        email,
+      }) => {
+        await sendOrganizationInviteEmail({
+          invitation,
+          organization,
+          email,
+          inviter: { name: inviter.user.name },
+        });
+      },
+    }),
     nextCookies(),
     twoFactor(),
     passkey(),
@@ -130,4 +146,22 @@ export const auth = betterAuth({
       },
     }),
   ],
+  databaseHooks: {
+    session: {
+      create: {
+        before: async (userSession) => {
+          const membership = await db?.collection("members").findOne({
+            userId: userSession.userId,
+          });
+
+          return {
+            data: {
+              ...userSession,
+              activeOrganizationId: membership?.organizationId ?? null,
+            },
+          };
+        },
+      },
+    },
+  },
 });
